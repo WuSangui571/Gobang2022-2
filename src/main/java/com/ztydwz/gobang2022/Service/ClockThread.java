@@ -12,26 +12,32 @@ public class ClockThread extends Thread {
 
     @Override
     public void run() {
-        System.out.println("运行中");
         while (true) {
+            boolean changed = false;
             if (putChess == playerPutChess && gameFlag) {
                 if (playerType == ChessType.BLACK) {
                     Clock.BlackTime++;
                 } else {
                     Clock.WhiteTime++;
                 }
+                changed = true;
             } else if (putChess == aiPutChess && gameFlag) {
                 if (aiType == ChessType.BLACK) {
                     Clock.BlackTime++;
                 } else {
                     Clock.WhiteTime++;
                 }
+                changed = true;
+            }
+            if (changed && gamePanel != null) {
+                gamePanel.repaint();
             }
 
             try {
                 Thread.sleep(1000L);
             } catch (InterruptedException var2) {
-                var2.printStackTrace();
+                Thread.currentThread().interrupt();
+                return;
             }
         }
     }

@@ -146,7 +146,7 @@ public class DesignatedStart {
                 break;
             }
             default: {
-                System.out.println("出现错误");
+                break;
             }
         }
         new Option().createOption(startName);
@@ -276,6 +276,9 @@ public class DesignatedStart {
         chessList.add(chess1);
         chessList.add(chess2);
         chessList.add(chess3);
+        if (gamePanel != null) {
+            gamePanel.repaint();
+        }
     }
 
 }

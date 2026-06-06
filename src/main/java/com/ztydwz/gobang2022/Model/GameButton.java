@@ -35,6 +35,17 @@ public class GameButton {
 
         JButton instructions = new JButton("游戏说明");
         instructions.setBounds(xStart, 110, width, height);
+        instructions.addActionListener((e) -> {
+            JOptionPane.showMessageDialog(frame,
+                "五子棋人机对弈程序\n\n"
+                + "1. 点击「游戏设置」选择先后手和游戏模式\n"
+                + "2. 点击「开始游戏」开始对弈\n"
+                + "3. 鼠标点击棋盘交叉点落子\n"
+                + "4. 悔棋按钮可撤销上一步\n"
+                + "5. 游戏结束后可通过菜单导出棋谱",
+                "游戏说明",
+                JOptionPane.INFORMATION_MESSAGE);
+        });
 
 
         JButton retract = new JButton("悔棋");

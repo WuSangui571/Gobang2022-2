@@ -20,6 +20,9 @@ public class ChessController {
                     dRFiveDaList.add(j);
                     Chess chess = new Chess(pointer.getX(), pointer.getY(), playerType);
                     sigleChessList.add(chess);
+                    if (gamePanel != null) {
+                        gamePanel.repaint();
+                    }
                     return true;
                 }
             }
@@ -43,6 +46,9 @@ public class ChessController {
                     }
                     chessList.add(chess);
                     pointer.setHasChess(true);
+                    if (gamePanel != null) {
+                        gamePanel.repaint();
+                    }
                     return true;
                 }
             }
@@ -71,9 +77,18 @@ public class ChessController {
 
         Chess chess = new Chess(pointer.getX(), pointer.getY(), aiType);
         chessList.add(chess);
+        if (gamePanel != null) {
+            gamePanel.repaint();
+        }
     }
 
     public void restract() {                                    //悔棋
+        if (chessList.isEmpty()) {
+            if (gamePanel != null) {
+                gamePanel.repaint();
+            }
+            return;
+        }
         //撤销上一次下的子
         Chess lastChess = chessList.get(chessList.size() - 1);
         int LastX = lastChess.getX();
@@ -87,6 +102,9 @@ public class ChessController {
             }
         }
         chessList.remove(chessList.size() - 1);
+        if (gamePanel != null) {
+            gamePanel.repaint();
+        }
     }
 
 }

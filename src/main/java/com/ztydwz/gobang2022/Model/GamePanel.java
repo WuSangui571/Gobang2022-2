@@ -9,6 +9,8 @@ import main.java.com.ztydwz.gobang2022.Service.DrawService;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import static main.java.com.ztydwz.gobang2022.Model.Static.*;
 
@@ -37,13 +39,20 @@ public class GamePanel extends JPanel {
         super.paint(graphics);
         DrawService drawService = new DrawService();
         drawService.draw(graphics);
-        repaint();
 
 
     }
 
     public void createListenMouseListener() {
-        //指示器监听器
+        MouseListener[] existingListeners = this.getMouseListeners();
+        for (MouseListener l : existingListeners) {
+            this.removeMouseListener(l);
+        }
+        MouseMotionListener[] existingMotionListeners = this.getMouseMotionListeners();
+        for (MouseMotionListener l : existingMotionListeners) {
+            this.removeMouseMotionListener(l);
+        }
+
         if (gameMode == GameMode.freeStart) {
             FreeStartController freeStartController = new FreeStartController();
             this.addMouseListener(freeStartController);
@@ -59,12 +68,10 @@ public class GamePanel extends JPanel {
             TwoPlayerBattleController twoPlayerBattleController = new TwoPlayerBattleController();
             this.addMouseListener(twoPlayerBattleController);
             this.addMouseMotionListener(twoPlayerBattleController);
-            this.addMouseMotionListener(twoPlayerBattleController);
         }
         if (gameMode == GameMode.twoAiPlayerBattle) {
             TwoAiBattleController twoAiPlayerBattle = new TwoAiBattleController();
             this.addMouseListener(twoAiPlayerBattle);
-            this.addMouseMotionListener(twoAiPlayerBattle);
             this.addMouseMotionListener(twoAiPlayerBattle);
         }
 

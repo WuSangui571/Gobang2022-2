@@ -1,0 +1,15 @@
+# Build output
+out/
+build/
+.tmp/
+*.class
+
+# IDE files (keep .idea/ project config tracked for IntelliJ users)
+# .idea/ is intentionally tracked
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Trellis workspace journals (keep spec and tasks tracked)
+.trellis/workspace/

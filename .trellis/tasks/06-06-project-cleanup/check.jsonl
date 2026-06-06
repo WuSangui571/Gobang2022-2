@@ -1,0 +1,18 @@
+{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file": ".trellis/spec/backend/index.md", "reason": "Core-game spec index for cleanup review"}
+{"file": ".trellis/spec/backend/directory-structure.md", "reason": "Review core Java package layout and cleanup placement"}
+{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "Review board state and record export persistence rules"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "Review error handling and validation fixes"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Review core game quality and forbidden patterns"}
+{"file": ".trellis/spec/backend/logging-guidelines.md", "reason": "Review logging and debug output cleanup"}
+{"file": ".trellis/spec/backend/algorithm-guidelines.md", "reason": "Review that AI behavior was not broadened"}
+{"file": ".trellis/spec/frontend/directory-structure.md", "reason": "Review Swing UI package and asset placement"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Review Swing component and paint behavior"}
+{"file": ".trellis/spec/frontend/hook-guidelines.md", "reason": "Review listener and EDT boundaries"}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "Review Static/Map/pointer/chessList synchronization"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Review Java type and validation choices"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Review Swing UI quality and smoke coverage"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Review cleanup for unnecessary duplication"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Review resource/build/UI boundary consistency"}
+{"file": ".trellis/spec/guides/gomoku-ai-thinking-guide.md", "reason": "Review that AI-sensitive changes are scoped"}
+{"file": ".trellis/tasks/06-06-project-cleanup/research/focused-code-research.md", "reason": "Focused research for check assertions"}

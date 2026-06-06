@@ -80,6 +80,9 @@ public class TwoAiBattleController extends MouseAdapter {
                 sigleChessList.add(chess);
                 putChess = whoPutChess.playerPutChess;
             }
+            if (gamePanel != null) {
+                gamePanel.repaint();
+            }
             ifFiveDa = true;
             ifDRFiveDa = true;
             new Option().createFiveDaOption();
@@ -105,6 +108,9 @@ public class TwoAiBattleController extends MouseAdapter {
         chessList.add(chess);
         ifDRFiveDa = false;
         putChess = whoPutChess.aiPutChess;
+        if (gamePanel != null) {
+            gamePanel.repaint();
+        }
     }
 
     public void blackAiController() {         //假定为玩家
@@ -119,6 +125,9 @@ public class TwoAiBattleController extends MouseAdapter {
 
     public void chooseFiveDa() {
         sigleChessList = new ArrayList<>();
+        if (gamePanel != null) {
+            gamePanel.repaint();
+        }
     }
 
     public void aiPutChess() {
@@ -143,6 +152,9 @@ public class TwoAiBattleController extends MouseAdapter {
         chessList.add(chess);
         if (aiType == ChessType.BLACK) {
             new AI().isForbiddenHand(i, j);
+        }
+        if (gamePanel != null) {
+            gamePanel.repaint();
         }
 
     }

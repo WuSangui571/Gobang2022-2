@@ -20,8 +20,23 @@ public class Option {
     }
 
     public void createInputFiveDaNumber() {
-        String num = JOptionPane.showInputDialog(gameFrame, "请输入打点数");
-        fiveDaNumber = Integer.parseInt(num);
+        while (true) {
+            String num = JOptionPane.showInputDialog(gameFrame, "请输入打点数 (2~5)");
+            if (num == null) {
+                return;
+            }
+            try {
+                int value = Integer.parseInt(num);
+                if (value < 2 || value > 5) {
+                    JOptionPane.showMessageDialog(gameFrame, "打点数必须在 2~5 之间", "输入错误", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+                fiveDaNumber = value;
+                return;
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(gameFrame, "请输入有效的数字", "输入错误", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     public void createOption(String message) {

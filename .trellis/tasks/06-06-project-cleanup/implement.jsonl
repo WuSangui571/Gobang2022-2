@@ -1,0 +1,19 @@
+{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file": ".trellis/spec/backend/index.md", "reason": "Core-game spec index for cleanup boundaries"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Swing UI spec index for cleanup boundaries"}
+{"file": ".trellis/spec/backend/directory-structure.md", "reason": "Core Java package layout and cleanup placement rules"}
+{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "Board state and record export persistence rules"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "Swing-safe validation and recoverable failure rules"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Core game quality and forbidden-pattern rules"}
+{"file": ".trellis/spec/backend/logging-guidelines.md", "reason": "Console/debug output cleanup rules"}
+{"file": ".trellis/spec/backend/algorithm-guidelines.md", "reason": "AI boundary rules so cleanup does not become algorithm rewrite"}
+{"file": ".trellis/spec/frontend/directory-structure.md", "reason": "Swing UI package and asset placement rules"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Swing component and paint behavior cleanup rules"}
+{"file": ".trellis/spec/frontend/hook-guidelines.md", "reason": "Swing listener and background-task rules"}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "Global state synchronization rules"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Java type and validation rules"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Swing UI quality and manual smoke requirements"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Avoid duplicate cleanup logic and constants"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Repository/resource/build/UI boundary thinking"}
+{"file": ".trellis/spec/guides/gomoku-ai-thinking-guide.md", "reason": "Guardrail for avoiding accidental AI changes"}
+{"file": ".trellis/tasks/06-06-project-cleanup/research/focused-code-research.md", "reason": "Focused code research and implementation targets"}

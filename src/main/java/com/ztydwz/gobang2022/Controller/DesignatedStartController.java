@@ -133,6 +133,9 @@ public class DesignatedStartController extends MouseAdapter {
                 putChess = whoPutChess.playerPutChess;
 
             }
+            if (gamePanel != null) {
+                gamePanel.repaint();
+            }
             ifFiveDa = true;
             new Option().createFiveDaOption();
         }
@@ -164,10 +167,16 @@ public class DesignatedStartController extends MouseAdapter {
         chessList.add(chess);
         ifDRFiveDa = false;
         putChess = whoPutChess.aiPutChess;
+        if (gamePanel != null) {
+            gamePanel.repaint();
+        }
     }
 
     public void chooseFiveDa() {
         sigleChessList = new ArrayList<>();
+        if (gamePanel != null) {
+            gamePanel.repaint();
+        }
     }
 
     public void exchange() {
