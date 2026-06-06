@@ -34,24 +34,39 @@ public class TwoAiBattleController extends MouseAdapter {
             return;
         }
 
-        FiveDa();
-
-        if (ifDRFiveDa) {
-            chooseDRChess();
-            ifDRFiveDa = false;
+        if (aiThinking) {
+            return;
         }
-        if (putChess == whoPutChess.aiPutChess) {
-            whiteAiController();
-            if (winFlag == -1) {
-                new JudgeIfWin();
+        aiThinking = true;
+
+        try {
+            FiveDa();
+
+            if (ifDRFiveDa) {
+                chooseDRChess();
+                ifDRFiveDa = false;
             }
-            putChess = whoPutChess.playerPutChess;
-        } else {
-            blackAiController();
-            if (winFlag == -1) {
-                new JudgeIfWin();
+            if (putChess == whoPutChess.aiPutChess) {
+                if (whiteAiController()) {
+                    if (winFlag == -1) {
+                        new JudgeIfWin();
+                    }
+                    putChess = whoPutChess.playerPutChess;
+                } else {
+                    gameFlag = false;
+                }
+            } else {
+                if (blackAiController()) {
+                    if (winFlag == -1) {
+                        new JudgeIfWin();
+                    }
+                    putChess = whoPutChess.aiPutChess;
+                } else {
+                    gameFlag = false;
+                }
             }
-            putChess = whoPutChess.aiPutChess;
+        } finally {
+            aiThinking = false;
         }
 
 
@@ -113,14 +128,14 @@ public class TwoAiBattleController extends MouseAdapter {
         }
     }
 
-    public void blackAiController() {         //假定为玩家
+    public boolean blackAiController() {         //假定为玩家
         aiType = ChessType.BLACK;
-        aiPutChess();
+        return aiPutChess();
     }
 
-    public void whiteAiController() {
+    public boolean whiteAiController() {
         aiType = ChessType.White;
-        aiPutChess();
+        return aiPutChess();
     }
 
     public void chooseFiveDa() {
@@ -130,7 +145,7 @@ public class TwoAiBattleController extends MouseAdapter {
         }
     }
 
-    public void aiPutChess() {
+    public boolean aiPutChess() {
         AI ai = new AI();
         if (aiType == ChessType.BLACK) {
             ai.setAiType(1);
@@ -141,6 +156,10 @@ public class TwoAiBattleController extends MouseAdapter {
         int[] arr = ai.getLocation();
         int i = arr[0];
         int j = arr[1];
+        if (i < 0 || j < 0 || i >= ROWS || j >= COLS || pointers[i][j].isHasChess()) {
+            System.out.println("AI has no legal move; game stopped.");
+            return false;
+        }
         Pointer pointer = pointers[i][j];
         pointer.setHasChess(true);
         if (aiType == ChessType.BLACK) {
@@ -156,6 +175,7 @@ public class TwoAiBattleController extends MouseAdapter {
         if (gamePanel != null) {
             gamePanel.repaint();
         }
+        return true;
 
     }
 

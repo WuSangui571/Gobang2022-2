@@ -1,5 +1,6 @@
 package main.java.com.ztydwz.gobang2022.Model;
 
+import main.java.com.ztydwz.gobang2022.Service.AiSearchConfig;
 import main.java.com.ztydwz.gobang2022.View.GameFrame;
 
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public class Static {
     public static boolean ifForbiddenHand = false; //是否有禁手
     public static boolean ifForbiddenHandOpen = true; //是否开启禁手检测
     public static boolean ifAllowForbiddenHandOpen = true; //是否允许程序下禁手
+    public static AiSearchConfig.Strength aiStrength = AiSearchConfig.Strength.MEDIUM; // AI strength default
+    public static volatile boolean aiThinking = false; // AI search in progress guard
 
     public enum whoPutChess {
         aiPutChess, playerPutChess

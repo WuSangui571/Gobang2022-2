@@ -1,0 +1,10 @@
+{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file": ".trellis/spec/guides/gomoku-ai-thinking-guide.md", "reason": "Check alpha-beta, evaluation, performance, and benchmark evidence against Gomoku AI guidance."}
+{"file": ".trellis/spec/backend/algorithm-guidelines.md", "reason": "Check search rules, candidate generation, forbidden-hand behavior, and deterministic tests."}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Check core quality, board mutation, mode preservation, and required harness coverage."}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "Check coordinate validation and no new broad catch blocks for expected boundaries."}
+{"file": ".trellis/spec/frontend/hook-guidelines.md", "reason": "Check Swing listener/background behavior and duplicate AI trigger prevention."}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "Check Static state and Map/pointers/chessList synchronization after AI moves/undo."}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Check manual Swing smoke coverage and responsiveness."}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Check strength/depth/result types avoid unclear magic values where feasible."}
+{"file": ".trellis/tasks/06-06-alpha-beta-ai/research/focused-code-research.md", "reason": "Check implementation against researched entry points, risks, files, and test plan."}

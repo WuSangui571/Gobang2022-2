@@ -108,12 +108,30 @@ public class DesignatedStartController extends MouseAdapter {
         FiveDa();
         diRenFiveDa();
         pointerController.changePointerShow(e.getX(), e.getY());
-        if (putChess == Static.whoPutChess.aiPutChess) {//ai回合
-            chessController.AiPutChess();
-            putChess = Static.whoPutChess.playerPutChess;
-            if (winFlag == -1) {
-                new JudgeIfWin();
-            }
+        if (putChess == Static.whoPutChess.aiPutChess && !aiThinking) {
+            aiThinking = true;
+            new Thread(() -> {
+                try {
+                    int[] move = chessController.getAiMove();
+                    SwingUtilities.invokeLater(() -> {
+                        if (chessController.applyAiMove(move[0], move[1])) {
+                            putChess = Static.whoPutChess.playerPutChess;
+                            if (winFlag == -1) {
+                                new JudgeIfWin();
+                            }
+                        } else {
+                            gameFlag = false;
+                            System.out.println("AI has no legal move; game stopped.");
+                        }
+                        aiThinking = false;
+                    });
+                } catch (RuntimeException ex) {
+                    ex.printStackTrace();
+                    SwingUtilities.invokeLater(() -> {
+                        aiThinking = false;
+                    });
+                }
+            }).start();
         }
         if (ifDRFiveDa && num == 0) {
             chooseDRChess();

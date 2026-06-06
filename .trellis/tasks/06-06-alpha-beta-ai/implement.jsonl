@@ -1,0 +1,16 @@
+{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file": ".trellis/spec/guides/index.md", "reason": "Guide index for cross-layer, reuse, and Gomoku AI thinking guides."}
+{"file": ".trellis/spec/guides/gomoku-ai-thinking-guide.md", "reason": "Required planning guide for alpha-beta search, evaluation, performance, and benchmark evidence."}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "AI strength spans core search, global settings, Swing UI, and turn-flow boundaries."}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Search existing AI/rule helpers before adding new duplicated logic."}
+{"file": ".trellis/spec/backend/index.md", "reason": "Core game development spec index for non-UI board/rule/AI work."}
+{"file": ".trellis/spec/backend/algorithm-guidelines.md", "reason": "Primary alpha-beta, candidate generation, evaluation, forbidden-hand, and benchmark rules."}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Core quality, board synchronization, deterministic AI, and test expectations."}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "Coordinate validation and no broad catch/boundary exceptions in new algorithm code."}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Swing UI spec index for settings and interaction changes."}
+{"file": ".trellis/spec/frontend/hook-guidelines.md", "reason": "Swing listener/background-task rules; deep AI must not freeze EDT or run from mouseMoved repeatedly."}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "Global Static state and Map/pointers/chessList synchronization rules."}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Settings dialog/control construction rules for fixed Swing layout."}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Manual UI smoke and responsiveness requirements."}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Java enum/value-object guidance for AI strength/search result config."}
+{"file": ".trellis/tasks/06-06-alpha-beta-ai/research/focused-code-research.md", "reason": "Focused code research: AI entry path, current alpha_beta flaws, UI trigger risks, expected files/tests."}

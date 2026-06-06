@@ -1,6 +1,10 @@
 package main.java.com.ztydwz.gobang2022.Service;//
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static main.java.com.ztydwz.gobang2022.Model.Static.Map;
 import static main.java.com.ztydwz.gobang2022.Model.Static.ifAllowForbiddenHandOpen;
@@ -22,55 +26,67 @@ public class Shou {
     int deep = 4;
     static boolean isDoForbidden = false;
 
+    private static final int WIN_SCORE = 100000000;
+    private AiSearchConfig searchConfig;
+
     public int[] getAnswer(int[][] map, int MAX_ROW, int MAX_COLUMN, int enemyColor, int aiColor) {
-        //return minmax(deep,map,aiColor,Integer.MIN_VALUE,Integer.MAX_VALUE);
+        int[][] board = myCopyArray(map);
+        searchConfig = new AiSearchConfig(main.java.com.ztydwz.gobang2022.Model.Static.aiStrength);
+        int stoneCount = countPieces(board);
+        int effectiveDepth = searchConfig.getEffectiveDepth(stoneCount);
+        long startTime = System.currentTimeMillis();
 
-        int[] answer = new int[2];
+        if (stoneCount == 0) {
+            return new int[]{7, 7};
+        }
 
-        //正常的五元组算法
-        /*int[] temp = getMaxGradeAndPlace(map, aiColor);*/
+        int[] winMove = findWinningMove(board, aiColor);
+        if (winMove != null) {
+            return winMove;
+        }
 
-        // hhh
-        int[] alpha= new int[3];
-        alpha[0] = Integer.MIN_VALUE;
-        int[] beta = new int[3];
-        beta[0] = Integer.MAX_VALUE;
-        int[] temp = alpha_beta(0,map,aiColor,alpha,beta);
+        List<int[]> candidates = generateCandidates(board, stoneCount);
+        if (candidates.isEmpty()) {
+            return new int[]{-1, -1};
+        }
+        sortCandidates(board, candidates, aiColor, enemyColor);
 
+        SearchResult bestResult = SearchResult.empty(0);
 
-        /*int i = temp[1];
-        int j = temp[2];
-        int liveThree = this.newLiveThree(map, aiColor,i,j);
-        int jumpLiveThree = this.jumpLiveThree(map,aiColor,i,j);
-        int liveFour = this.liveFour(map,aiColor,i,j);
-        int longSix = this.longSix(map,aiColor,i,j);
-        int rushFour = this.rushFour(map,aiColor,i,j);
-        int jumpFour = this.jumpFour(map,aiColor,i,j);
-        boolean flag = (longSix == 1) || (liveThree + jumpLiveThree == 1 && rushFour + jumpFour + liveFour == 2)
-                || (liveThree + jumpLiveThree == 2 && rushFour + jumpFour + liveFour == 1) ||
-                (liveThree + jumpLiveThree == 2) || (liveFour + rushFour + jumpFour == 2);
-        if (flag && aiColor == 1){
-            int[][] tempMap = new int[map.length][];
-            for (int k = 0; k < map.length; k++) {
-                tempMap[k] = map[k].clone();
+        for (int[] cand : candidates) {
+            int r = cand[0];
+            int c = cand[1];
+            if (!isLegalCandidate(board, aiColor, r, c)) {
+                continue;
             }
-            tempMap[i][j] = 999;
-            temp = getMaxGradeAndPlace(tempMap,aiColor);
-            System.out.println("禁手规避了！");
-        }*/
 
+            if (System.currentTimeMillis() - startTime >= searchConfig.timeLimitMillis) {
+                break;
+            }
 
-        // 高级算法，不完善
-        //int[] temp = getScopeMaxGradeAndPlace(map,aiColor);
+            board[r][c] = aiColor;
+            int score = -negamax(board, enemyColor, aiColor, effectiveDepth - 1,
+                    Integer.MIN_VALUE + 1, Integer.MAX_VALUE - 1,
+                    startTime, searchConfig.timeLimitMillis, effectiveDepth);
+            board[r][c] = 0;
 
+            if (score > bestResult.score) {
+                bestResult = new SearchResult(score, r, c, effectiveDepth,
+                        System.currentTimeMillis() - startTime);
+            }
+        }
 
-        // 极大极小值算法，基于正常的五元组算法
-        //int[] temp = f(map,aiColor);
+        if (bestResult.row >= 0 && bestResult.col >= 0) {
+            return new int[]{bestResult.row, bestResult.col};
+        }
 
+        for (int[] cand : candidates) {
+            if (isLegalCandidate(board, aiColor, cand[0], cand[1])) {
+                return new int[]{cand[0], cand[1]};
+            }
+        }
 
-        answer[0] = temp[1];
-        answer[1] = temp[2];
-        return answer;
+        return new int[]{-1, -1};
     }
 
     public int[] fiveNda(int[][] map, int N) {
@@ -80,6 +96,235 @@ public class Shou {
     public int[] enemyFiveNda(int[] arr) {
 
         return null;
+    }
+
+    private int countPieces(int[][] board) {
+        int count = 0;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j] != 0) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    private boolean hasFiveInARow(int[][] board, int color) {
+        int size = board.length;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j <= size - 5; j++) {
+                if (board[i][j] == color && board[i][j + 1] == color && board[i][j + 2] == color
+                        && board[i][j + 3] == color && board[i][j + 4] == color) {
+                    return true;
+                }
+            }
+        }
+        for (int i = 0; i <= size - 5; i++) {
+            for (int j = 0; j < size; j++) {
+                if (board[i][j] == color && board[i + 1][j] == color && board[i + 2][j] == color
+                        && board[i + 3][j] == color && board[i + 4][j] == color) {
+                    return true;
+                }
+            }
+        }
+        for (int i = 0; i <= size - 5; i++) {
+            for (int j = 0; j <= size - 5; j++) {
+                if (board[i][j] == color && board[i + 1][j + 1] == color && board[i + 2][j + 2] == color
+                        && board[i + 3][j + 3] == color && board[i + 4][j + 4] == color) {
+                    return true;
+                }
+            }
+        }
+        for (int i = 4; i < size; i++) {
+            for (int j = 0; j <= size - 5; j++) {
+                if (board[i][j] == color && board[i - 1][j + 1] == color && board[i - 2][j + 2] == color
+                        && board[i - 3][j + 3] == color && board[i - 4][j + 4] == color) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private int[] findWinningMove(int[][] board, int color) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j] == 0) {
+                    if (!isLegalCandidate(board, color, i, j)) {
+                        continue;
+                    }
+                    board[i][j] = color;
+                    boolean win = hasFiveInARow(board, color);
+                    board[i][j] = 0;
+                    if (win) {
+                        return new int[]{i, j};
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<int[]> generateCandidates(int[][] board, int stoneCount) {
+        Set<String> seen = new HashSet<>();
+        List<int[]> result = new ArrayList<>();
+
+        if (stoneCount == 0) {
+            result.add(new int[]{7, 7});
+            return result;
+        }
+
+        int radius = 2;
+        int size = board.length;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (board[i][j] != 0) {
+                    for (int di = -radius; di <= radius; di++) {
+                        for (int dj = -radius; dj <= radius; dj++) {
+                            int ni = i + di;
+                            int nj = j + dj;
+                            if (ni >= 0 && ni < size && nj >= 0 && nj < size && board[ni][nj] == 0) {
+                                String key = ni + "," + nj;
+                                if (seen.add(key)) {
+                                    result.add(new int[]{ni, nj});
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private void sortCandidates(int[][] board, List<int[]> candidates, int aiColor, int enemyColor) {
+        candidates.sort((a, b) -> {
+            int score1 = getSortScore(board, a[0], a[1], aiColor, enemyColor);
+            int score2 = getSortScore(board, b[0], b[1], aiColor, enemyColor);
+            int scoreCompare = Integer.compare(score2, score1);
+            if (scoreCompare != 0) {
+                return scoreCompare;
+            }
+            int rowCompare = Integer.compare(a[0], b[0]);
+            if (rowCompare != 0) {
+                return rowCompare;
+            }
+            return Integer.compare(a[1], b[1]);
+        });
+    }
+
+    private int getSortScore(int[][] board, int r, int c, int aiColor, int enemyColor) {
+        if (board[r][c] != 0) {
+            return Integer.MIN_VALUE;
+        }
+
+        board[r][c] = aiColor;
+        if (hasFiveInARow(board, aiColor)) {
+            board[r][c] = 0;
+            return WIN_SCORE;
+        }
+        board[r][c] = 0;
+
+        board[r][c] = enemyColor;
+        if (hasFiveInARow(board, enemyColor)) {
+            board[r][c] = 0;
+            return WIN_SCORE - 1;
+        }
+        board[r][c] = 0;
+
+        int centerDist = Math.abs(r - 7) + Math.abs(c - 7);
+        int posScore = (14 - centerDist) * 10;
+
+        board[r][c] = aiColor;
+        int aiScore = getGrade(board, aiColor);
+        board[r][c] = 0;
+
+        return posScore + aiScore / 5;
+    }
+
+    private int negamax(int[][] board, int color, int opponent, int depth,
+                        int alpha, int beta, long startTime, long timeLimit, int maxDepth) {
+
+        if (System.currentTimeMillis() - startTime >= timeLimit) {
+            return getGrade(board, color) - getGrade(board, opponent);
+        }
+
+        if (hasFiveInARow(board, opponent)) {
+            return -(WIN_SCORE - (maxDepth - depth) * 1000);
+        }
+        if (hasFiveInARow(board, color)) {
+            return WIN_SCORE - (maxDepth - depth) * 1000;
+        }
+
+        if (depth <= 0) {
+            return getGrade(board, color) - getGrade(board, opponent);
+        }
+
+        int stoneCount = countPieces(board);
+        List<int[]> candidates = generateCandidates(board, stoneCount);
+
+        if (candidates.isEmpty()) {
+            return 0;
+        }
+
+        sortCandidates(board, candidates, color, opponent);
+
+        int bestScore = Integer.MIN_VALUE;
+        boolean hasValidMove = false;
+
+        for (int[] cand : candidates) {
+            int r = cand[0];
+            int c = cand[1];
+            if (!isLegalCandidate(board, color, r, c)) {
+                continue;
+            }
+
+            hasValidMove = true;
+            board[r][c] = color;
+            int score = -negamax(board, opponent, color, depth - 1,
+                    -beta, -alpha, startTime, timeLimit, maxDepth);
+            board[r][c] = 0;
+
+            if (score > bestScore) {
+                bestScore = score;
+            }
+            if (score > alpha) {
+                alpha = score;
+            }
+            if (alpha >= beta) {
+                break;
+            }
+        }
+
+        if (!hasValidMove) {
+            return getGrade(board, color) - getGrade(board, opponent);
+        }
+
+        return bestScore;
+    }
+
+    private boolean isLegalCandidate(int[][] board, int color, int r, int c) {
+        if (r < 0 || c < 0 || r >= board.length || c >= board[0].length) {
+            return false;
+        }
+        if (board[r][c] != 0) {
+            return false;
+        }
+        return color != 1 || ifAllowForbiddenHandOpen || !isForbiddenForAI(board, color, r, c);
+    }
+
+    private boolean isForbiddenForAI(int[][] board, int aiColor, int r, int c) {
+        if (aiColor != 1) {
+            return false;
+        }
+        int liveThree = this.newLiveThree(board, aiColor, r, c);
+        int jumpLiveThree = this.jumpLiveThree(board, aiColor, r, c);
+        int liveFour = this.liveFour(board, aiColor, r, c);
+        int longSix = this.longSix(board, aiColor, r, c);
+        int rushFour = this.rushFour(board, aiColor, r, c);
+        return longSix == 1 || liveThree + jumpLiveThree >= 2 || liveFour + rushFour >= 2;
     }
 
     private int[] f(int[][] board, int aiColor) {

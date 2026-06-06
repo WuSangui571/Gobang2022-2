@@ -2,6 +2,8 @@ package main.java.com.ztydwz.gobang2022.Model;
 
 import main.java.com.ztydwz.gobang2022.View.Option;
 
+import main.java.com.ztydwz.gobang2022.Service.AiSearchConfig;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -76,6 +78,21 @@ public class GameDialog extends JDialog {
         choose9.setBounds(250, 155, 100, 50);
 
 
+        JLabel label5 = new JLabel("AI 强度:");
+        JRadioButton choose10 = new JRadioButton("低");
+        JRadioButton choose11 = new JRadioButton("中");
+        choose11.setSelected(true);
+        JRadioButton choose12 = new JRadioButton("高");
+        ButtonGroup group5 = new ButtonGroup();
+        group5.add(choose10);
+        group5.add(choose11);
+        group5.add(choose12);
+        label5.setFont(font);
+        label5.setBounds(0, 210, 100, 40);
+        choose10.setBounds(150, 205, 60, 50);
+        choose11.setBounds(220, 205, 60, 50);
+        choose12.setBounds(290, 205, 60, 50);
+
         JButton confirmation = new JButton("确定");     //确定按钮
 
         confirmation.addActionListener((e) -> {
@@ -119,6 +136,14 @@ public class GameDialog extends JDialog {
                 System.out.println("拒绝禁手");
             }
 
+            if (choose10.isSelected()) {
+                aiStrength = AiSearchConfig.Strength.LOW;
+            } else if (choose11.isSelected()) {
+                aiStrength = AiSearchConfig.Strength.MEDIUM;
+            } else if (choose12.isSelected()) {
+                aiStrength = AiSearchConfig.Strength.HIGH;
+            }
+
             gamePanel.createListenMouseListener();
             this.setVisible(false);
         });
@@ -143,6 +168,11 @@ public class GameDialog extends JDialog {
         dialogPanel.add(label4);
         dialogPanel.add(choose8);
         dialogPanel.add(choose9);
+
+        dialogPanel.add(label5);
+        dialogPanel.add(choose10);
+        dialogPanel.add(choose11);
+        dialogPanel.add(choose12);
 
         dialogPanel.add(confirmation);
         //add(dialog);

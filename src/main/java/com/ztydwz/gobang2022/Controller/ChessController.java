@@ -65,9 +65,27 @@ public class ChessController {
         }
 
         int[] arr = ai.getLocation();
-        int i = arr[0];
-        int j = arr[1];
+        applyAiMove(arr[0], arr[1]);
+    }
+
+    public int[] getAiMove() {
+        AI ai = new AI();
+        if (aiType == ChessType.BLACK) {
+            ai.setAiType(1);
+        } else {
+            ai.setAiType(2);
+        }
+        return ai.getLocation();
+    }
+
+    public boolean applyAiMove(int i, int j) {
+        if (i < 0 || j < 0 || i >= ROWS || j >= COLS) {
+            return false;
+        }
         Pointer pointer = pointers[i][j];
+        if (pointer.isHasChess()) {
+            return false;
+        }
         pointer.setHasChess(true);
         if (aiType == ChessType.BLACK) {
             Map[i][j] = 1;
@@ -80,6 +98,7 @@ public class ChessController {
         if (gamePanel != null) {
             gamePanel.repaint();
         }
+        return true;
     }
 
     public void restract() {                                    //悔棋
