@@ -86,3 +86,63 @@ Archived project-cleanup after manual acceptance; recorded repository hygiene, R
 ### Next Steps
 
 - None - task complete
+
+
+## Session 2: Alpha-beta AI search
+
+**Date**: 2026-06-07
+**Task**: Alpha-beta AI search
+**Branch**: `feature/alpha-beta-ai`
+
+### Summary
+
+Implemented configurable alpha-beta AI search, completed Codex quality fixes, passed javac/harness checks, and user manual Swing smoke passed.
+
+### Main Changes
+
+## Work Commit
+
+- `556cd78 feat:增强五子棋AI搜索`
+
+## Main Modules Changed
+
+- AI search core: `Service/Shou.java`, `Service/AiSearchConfig.java`, `Service/SearchResult.java`
+- Swing turn flow: `Controller/ChessController.java`, `Controller/FreeStartController.java`, `Controller/DesignatedStartController.java`, `Controller/TwoAiBattleController.java`
+- Settings/global state: `Model/GameDialog.java`, `Model/Static.java`
+- Deterministic validation harness: `src/test/java/com/ztydwz/gobang2022/Service/AiSearchHarness.java`
+- Trellis task records: `.trellis/tasks/06-06-alpha-beta-ai/`
+
+## Verification
+
+- `javac -encoding UTF-8 -d .tmp\classes "@.tmp\sources.txt"` passed.
+- `Copy-Item -Recurse -Force src\main\java\com\ztydwz\gobang2022\image .tmp\classes\main\java\com\ztydwz\gobang2022\` passed.
+- `Copy-Item -Recurse -Force src\main\java\com\ztydwz\gobang2022\config .tmp\classes\main\java\com\ztydwz\gobang2022\` passed.
+- `java -cp .tmp\classes com.ztydwz.gobang2022.Service.AiSearchHarness` passed with `24 passed, 0 failed`.
+- Manual Swing smoke was reported by the user as passed on 2026-06-07.
+
+## Result And Boundaries
+
+- Implemented configurable Low / Medium / High deterministic alpha-beta AI with early-game depth reduction and time caps.
+- Preserved supported Swing modes and added AI in-progress guards for long search paths.
+- Added legal move handling for no-candidate and full-board cases.
+- Codex check fixed negamax terminal scoring, forbidden-hand filtering for immediate wins, invalid AI move guards, and stronger harness assertions.
+- No database, API, infra, package-root, or build-system migration was introduced.
+
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `556cd78` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

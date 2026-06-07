@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 1
-- **Last Active**: 2026-06-06
+- **Total Sessions**: 2
+- **Last Active**: 2026-06-07
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~88 | Active |
+| `journal-1.md` | ~148 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 2 | 2026-06-07 | Alpha-beta AI search | `556cd78` | `feature/alpha-beta-ai` |
 | 1 | 2026-06-06 | Project cleanup and Swing smoke acceptance | `93fc322` | `chore/project-cleanup` |
 <!-- @@@/auto:session-history -->
 
