@@ -1,0 +1,8 @@
+{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file": ".trellis/spec/guides/gomoku-ai-thinking-guide.md", "reason": "Position-first guide for Gomoku AI scoring, alpha-beta, tactical priority, and benchmark evidence."}
+{"file": ".trellis/spec/backend/algorithm-guidelines.md", "reason": "Primary rules for candidate generation, tactical ordering, evaluation weights, pruning, forbidden hands, and benchmark evidence."}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Core quality rules for deterministic AI behavior, no mutation, forbidden patterns, and harness expectations."}
+{"file": ".trellis/spec/backend/logging-guidelines.md", "reason": "AI diagnostics must stay controlled and outside tight search loops; benchmark output format guidance."}
+{"file": ".trellis/spec/frontend/hook-guidelines.md", "reason": "Swing listener and EDT boundaries; algorithm work must not depend on mouse movement or freeze UI."}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Manual Swing smoke and responsiveness expectations for AI-affecting changes."}
+{"file": ".trellis/tasks/06-07-ai-scoring-pruning-plan/research/focused-code-research.md", "reason": "Focused code research for current search path, scoring weakness, likely files, risks, and required tests."}
