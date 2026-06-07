@@ -146,3 +146,71 @@ Implemented configurable alpha-beta AI search, completed Codex quality fixes, pa
 ### Next Steps
 
 - None - task complete
+
+
+## Session 3: Record Gobang AI tactical scoring closeout
+
+**Date**: 2026-06-07
+**Task**: Record Gobang AI tactical scoring closeout
+**Branch**: `feature/ai-scoring-pruning`
+
+### Summary
+
+Archived the completed Gobang AI scoring/pruning task after commit and manual acceptance.
+
+### Main Changes
+
+Commit: 038026e2ef8d0297dc62d126c445c301dfed9684
+Branch: feature/ai-scoring-pruning
+Task: 06-07-ai-scoring-pruning-plan
+
+Main modules changed:
+- AI search and scoring: src/main/java/com/ztydwz/gobang2022/Service/Shou.java
+- Deterministic AI harness: src/test/java/com/ztydwz/gobang2022/Service/AiSearchHarness.java
+- Trellis task context/archive metadata under .trellis/tasks/
+
+Updated files:
+- src/main/java/com/ztydwz/gobang2022/Service/Shou.java
+- src/test/java/com/ztydwz/gobang2022/Service/AiSearchHarness.java
+- .trellis/tasks/archive/2026-06/06-07-ai-scoring-pruning-plan/*
+
+Verification completed:
+- javac -encoding UTF-8 -d .tmp\classes "@.tmp\sources.txt" passed
+- java -cp .tmp\classes com.ztydwz.gobang2022.Service.AiSearchHarness passed: 36 passed, 0 failed
+- git diff --check passed with only LF/CRLF warnings
+- python ./.trellis/scripts/task.py validate 06-07-ai-scoring-pruning-plan passed before archive
+- Manual Swing acceptance was confirmed by the user after Codex check/finish-work
+
+Result:
+- DeepSeek implemented tactical ordering and scoring changes for Gobang AI.
+- Codex added a narrow immediate-block fast path before negamax and a harness regression case.
+- Codex removed legacy tight-loop debug output from Shou.java.
+- The implementation preserves AI.getLocation/getAnswer contracts, board encoding, forbidden-hand coverage, deterministic search evidence, and no input-board mutation.
+- The completed task was archived after commit and manual acceptance.
+
+Boundaries and follow-up:
+- No Maven/Gradle migration, API/DB/infra change, Swing controller rewrite, or full Renju engine rewrite was done.
+- MEDIUM tactical search can still take several seconds in the harness, so future work may target candidate caps, tactical pre-check expansion, or moving long AI work off the Swing EDT.
+
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `038026e2ef8d0297dc62d126c445c301dfed9684` | (see git log) |
+
+### Testing
+
+- [OK] `javac -encoding UTF-8 -d .tmp\classes "@.tmp\sources.txt"` passed.
+- [OK] `java -cp .tmp\classes com.ztydwz.gobang2022.Service.AiSearchHarness` passed: 36 passed, 0 failed.
+- [OK] `git diff --check` passed with only LF/CRLF warnings.
+- [OK] `python ./.trellis/scripts/task.py validate 06-07-ai-scoring-pruning-plan` passed before archive.
+- [OK] Manual Swing acceptance was confirmed by the user.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
