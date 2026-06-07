@@ -27,6 +27,13 @@ public class Shou {
     static boolean isDoForbidden = false;
 
     private static final int WIN_SCORE = 100000000;
+    private static final int WIN_SORT_SCORE = 100000000;
+    private static final int BLOCK_WIN_SORT_SCORE = 90000000;
+    private static final int OWN_FOUR_SORT_SCORE = 80000000;
+    private static final int BLOCK_FOUR_SORT_SCORE = 70000000;
+    private static final int OWN_THREE_SORT_SCORE = 60000000;
+    private static final int BLOCK_THREE_SORT_SCORE = 50000000;
+    private static final int POSITIONAL_SORT_BASE = 1000;
     private AiSearchConfig searchConfig;
 
     public int[] getAnswer(int[][] map, int MAX_ROW, int MAX_COLUMN, int enemyColor, int aiColor) {
@@ -43,6 +50,11 @@ public class Shou {
         int[] winMove = findWinningMove(board, aiColor);
         if (winMove != null) {
             return winMove;
+        }
+
+        int[] blockMove = findImmediateBlockMove(board, aiColor, enemyColor);
+        if (blockMove != null) {
+            return blockMove;
         }
 
         List<int[]> candidates = generateCandidates(board, stoneCount);
@@ -166,6 +178,23 @@ public class Shou {
         return null;
     }
 
+    private int[] findImmediateBlockMove(int[][] board, int aiColor, int enemyColor) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j] == 0 && isLegalCandidate(board, aiColor, i, j)
+                        && isLegalCandidate(board, enemyColor, i, j)) {
+                    board[i][j] = enemyColor;
+                    boolean enemyWin = hasFiveInARow(board, enemyColor);
+                    board[i][j] = 0;
+                    if (enemyWin) {
+                        return new int[]{i, j};
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     private List<int[]> generateCandidates(int[][] board, int stoneCount) {
         Set<String> seen = new HashSet<>();
         List<int[]> result = new ArrayList<>();
@@ -199,6 +228,37 @@ public class Shou {
         return result;
     }
 
+    private int maxConsecutiveStones(int[][] board, int r, int c, int color) {
+        int maxLine = 0;
+        int[][] dirs = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
+        int size = board.length;
+        for (int[] dir : dirs) {
+            int count = 1;
+            for (int d = 1; d <= 4; d++) {
+                int nr = r + dir[0] * d;
+                int nc = c + dir[1] * d;
+                if (nr >= 0 && nr < size && nc >= 0 && nc < size && board[nr][nc] == color) {
+                    count++;
+                } else {
+                    break;
+                }
+            }
+            for (int d = 1; d <= 4; d++) {
+                int nr = r - dir[0] * d;
+                int nc = c - dir[1] * d;
+                if (nr >= 0 && nr < size && nc >= 0 && nc < size && board[nr][nc] == color) {
+                    count++;
+                } else {
+                    break;
+                }
+            }
+            if (count > maxLine) {
+                maxLine = count;
+            }
+        }
+        return maxLine;
+    }
+
     private void sortCandidates(int[][] board, List<int[]> candidates, int aiColor, int enemyColor) {
         candidates.sort((a, b) -> {
             int score1 = getSortScore(board, a[0], a[1], aiColor, enemyColor);
@@ -223,25 +283,40 @@ public class Shou {
         board[r][c] = aiColor;
         if (hasFiveInARow(board, aiColor)) {
             board[r][c] = 0;
-            return WIN_SCORE;
+            return WIN_SORT_SCORE;
         }
+        int ownLine = maxConsecutiveStones(board, r, c, aiColor);
         board[r][c] = 0;
 
         board[r][c] = enemyColor;
         if (hasFiveInARow(board, enemyColor)) {
             board[r][c] = 0;
-            return WIN_SCORE - 1;
+            return BLOCK_WIN_SORT_SCORE;
         }
+        int enemyLine = maxConsecutiveStones(board, r, c, enemyColor);
         board[r][c] = 0;
+
+        if (ownLine >= 4) {
+            return OWN_FOUR_SORT_SCORE + ownLine;
+        }
+        if (enemyLine >= 4) {
+            return BLOCK_FOUR_SORT_SCORE + enemyLine;
+        }
+        if (ownLine >= 3) {
+            return OWN_THREE_SORT_SCORE + ownLine;
+        }
+        if (enemyLine >= 3) {
+            return BLOCK_THREE_SORT_SCORE + enemyLine;
+        }
 
         int centerDist = Math.abs(r - 7) + Math.abs(c - 7);
-        int posScore = (14 - centerDist) * 10;
+        int posScore = (14 - centerDist) * POSITIONAL_SORT_BASE / 10;
 
         board[r][c] = aiColor;
-        int aiScore = getGrade(board, aiColor);
+        int aiEval = getGrade(board, aiColor);
         board[r][c] = 0;
 
-        return posScore + aiScore / 5;
+        return posScore + aiEval / 5;
     }
 
     private int negamax(int[][] board, int color, int opponent, int depth,
@@ -374,7 +449,6 @@ public class Shou {
                                                             tempMap4[q] = board[q].clone();
                                                         }
                                                         int temp = getGrade(tempMap4, 3 - aiColor, o, p);
-                                                        System.out.println("玩命计算中...");
                                                         if (temp < grade4) {
                                                             grade4 = temp;
                                                         }
@@ -622,7 +696,6 @@ public class Shou {
     }*/
 
     private int getFiveGrade(int aiColor, int[] nums) {
-        float key = 1.2F;
         int enemyColor = 3 - aiColor;
         boolean existAi = false;
         int countAi = 0;
@@ -647,11 +720,31 @@ public class Shou {
             return 0;
         }
         if (existAi) {
-            return pow(10, countAi);
+            switch (countAi) {
+                case 1:
+                    return 1;
+                case 2:
+                    return 10;
+                case 3:
+                    return 1000;
+                case 4:
+                    return 50000;
+                default:
+                    return 0;
+            }
         }
-
-        int enemyGrade = pow(10, countEnemy);
-        return (int) -(key * enemyGrade);
+        switch (countEnemy) {
+            case 1:
+                return -2;
+            case 2:
+                return -20;
+            case 3:
+                return -2000;
+            case 4:
+                return -100000;
+            default:
+                return 0;
+        }
     }
 
     private int pow(int a, int n) {

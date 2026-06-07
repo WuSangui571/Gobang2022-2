@@ -12,6 +12,7 @@ public class AiSearchHarness {
 
         testImmediateWin();
         testImmediateBlock();
+        testImmediateBlockQuick();
         testNoBoardMutation();
         testDeterminism();
         testStrengthDepthMapping();
@@ -20,6 +21,10 @@ public class AiSearchHarness {
         testWhiteNotFiltered();
         testFullBoardNoMove();
         testBenchmark();
+        testOwnFourPriority();
+        testOpponentFourBlock();
+        testQuickTacticalResponseLow();
+        testQuickTacticalResponseMedium();
 
         System.out.println("\n=== Results: " + passed + " passed, " + failed + " failed ===");
         if (failed > 0) {
@@ -119,6 +124,35 @@ public class AiSearchHarness {
         System.out.println("  AI chose [" + move[0] + "," + move[1] + "] to block opponent");
         assertTrue("not occupied", preCopy[move[0]][move[1]] == 0);
         assertTrue("blocks diagonal win", move[0] == 4 && move[1] == 4);
+        assertTrue("board unchanged", boardsEqual(preCopy, board));
+    }
+
+    private static void testImmediateBlockQuick() {
+        System.out.println("[2b] Immediate Block Fast Path");
+
+        int[][] board = emptyBoard();
+        setBoard(board, 0, 0, 2);
+        setBoard(board, 1, 1, 2);
+        setBoard(board, 2, 2, 2);
+        setBoard(board, 3, 3, 2);
+        setBoard(board, 7, 7, 1);
+
+        int[][] preCopy = copyBoard(board);
+
+        long start = System.currentTimeMillis();
+
+        AiSearchConfig.Strength saved = main.java.com.ztydwz.gobang2022.Model.Static.aiStrength;
+        main.java.com.ztydwz.gobang2022.Model.Static.aiStrength = AiSearchConfig.Strength.MEDIUM;
+
+        int[] move = callAi(board, 1);
+
+        main.java.com.ztydwz.gobang2022.Model.Static.aiStrength = saved;
+
+        long elapsed = System.currentTimeMillis() - start;
+
+        System.out.println("  AI chose [" + move[0] + "," + move[1] + "] elapsed=" + elapsed + "ms");
+        assertTrue("immediate block returns before deep search", elapsed <= 1000);
+        assertTrue("blocks immediate diagonal win", move[0] == 4 && move[1] == 4);
         assertTrue("board unchanged", boardsEqual(preCopy, board));
     }
 
@@ -325,5 +359,111 @@ public class AiSearchHarness {
             }
         }
         return true;
+    }
+
+    private static void testOwnFourPriority() {
+        System.out.println("[11] Own Forcing-Four / Open-Four Priority");
+
+        int[][] board = emptyBoard();
+        setBoard(board, 7, 5, 1);
+        setBoard(board, 7, 6, 1);
+        setBoard(board, 7, 7, 1);
+        setBoard(board, 0, 0, 2);
+        setBoard(board, 1, 1, 2);
+
+        int[][] preCopy = copyBoard(board);
+
+        AiSearchConfig.Strength saved = main.java.com.ztydwz.gobang2022.Model.Static.aiStrength;
+        main.java.com.ztydwz.gobang2022.Model.Static.aiStrength = AiSearchConfig.Strength.LOW;
+
+        int[] move = callAi(board, 1);
+
+        main.java.com.ztydwz.gobang2022.Model.Static.aiStrength = saved;
+
+        System.out.println("  AI chose [" + move[0] + "," + move[1] + "] (expected row=7, col=4 or 8)");
+        assertEq("own-four row", 7, move[0]);
+        boolean ownFourExt = move[0] == 7 && (move[1] == 4 || move[1] == 8);
+        assertTrue("own-four extends three to four", ownFourExt);
+        assertTrue("board unchanged", boardsEqual(preCopy, board));
+    }
+
+    private static void testOpponentFourBlock() {
+        System.out.println("[12] Opponent Four Block Priority");
+
+        int[][] board = emptyBoard();
+        setBoard(board, 3, 3, 2);
+        setBoard(board, 3, 4, 2);
+        setBoard(board, 3, 5, 2);
+        setBoard(board, 7, 7, 1);
+
+        int[][] preCopy = copyBoard(board);
+
+        AiSearchConfig.Strength saved = main.java.com.ztydwz.gobang2022.Model.Static.aiStrength;
+        main.java.com.ztydwz.gobang2022.Model.Static.aiStrength = AiSearchConfig.Strength.LOW;
+
+        int[] move = callAi(board, 1);
+
+        main.java.com.ztydwz.gobang2022.Model.Static.aiStrength = saved;
+
+        System.out.println("  AI chose [" + move[0] + "," + move[1] + "] (expected row=3, col=2 or 6 to block)");
+        boolean blocksEnemyFour = move[0] == 3 && (move[1] == 2 || move[1] == 6);
+        assertTrue("blocks opponent four creation", blocksEnemyFour);
+        assertTrue("board unchanged", boardsEqual(preCopy, board));
+    }
+
+    private static void testQuickTacticalResponseLow() {
+        System.out.println("[13] Quick Tactical Response (LOW strength)");
+
+        int[][] board = emptyBoard();
+        setBoard(board, 7, 5, 1);
+        setBoard(board, 7, 6, 1);
+        setBoard(board, 7, 7, 1);
+        setBoard(board, 0, 0, 2);
+
+        long start = System.currentTimeMillis();
+
+        AiSearchConfig.Strength saved = main.java.com.ztydwz.gobang2022.Model.Static.aiStrength;
+        main.java.com.ztydwz.gobang2022.Model.Static.aiStrength = AiSearchConfig.Strength.LOW;
+
+        int[] move = callAi(board, 1);
+
+        main.java.com.ztydwz.gobang2022.Model.Static.aiStrength = saved;
+
+        long elapsed = System.currentTimeMillis() - start;
+
+        AiSearchConfig cfg = new AiSearchConfig(AiSearchConfig.Strength.LOW);
+
+        System.out.println("  AI chose [" + move[0] + "," + move[1] + "] elapsed=" + elapsed + "ms");
+        assertTrue("LOW tactical within time budget", elapsed <= cfg.timeLimitMillis + 1000);
+        boolean tacticalMove = move[0] == 7 && (move[1] == 4 || move[1] == 8);
+        assertTrue("LOW finds tactical extension", tacticalMove);
+    }
+
+    private static void testQuickTacticalResponseMedium() {
+        System.out.println("[14] Quick Tactical Response (MEDIUM strength)");
+
+        int[][] board = emptyBoard();
+        setBoard(board, 7, 5, 1);
+        setBoard(board, 7, 6, 1);
+        setBoard(board, 7, 7, 1);
+        setBoard(board, 0, 0, 2);
+
+        long start = System.currentTimeMillis();
+
+        AiSearchConfig.Strength saved = main.java.com.ztydwz.gobang2022.Model.Static.aiStrength;
+        main.java.com.ztydwz.gobang2022.Model.Static.aiStrength = AiSearchConfig.Strength.MEDIUM;
+
+        int[] move = callAi(board, 1);
+
+        main.java.com.ztydwz.gobang2022.Model.Static.aiStrength = saved;
+
+        long elapsed = System.currentTimeMillis() - start;
+
+        AiSearchConfig cfg = new AiSearchConfig(AiSearchConfig.Strength.MEDIUM);
+
+        System.out.println("  AI chose [" + move[0] + "," + move[1] + "] elapsed=" + elapsed + "ms");
+        assertTrue("MEDIUM tactical within time budget", elapsed <= cfg.timeLimitMillis + 3000);
+        boolean tacticalMove = move[0] == 7 && (move[1] == 4 || move[1] == 8);
+        assertTrue("MEDIUM finds tactical extension", tacticalMove);
     }
 }
